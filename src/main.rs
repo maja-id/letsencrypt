@@ -13,9 +13,11 @@ async fn main() {
 
     let domains = settings.get::<Vec<String>>("domains").unwrap();
     let email = settings.get::<String>("email").unwrap();
+    let production = settings.get::<bool>("production").unwrap();
     let mut tls_incoming = AcmeConfig::new(domains)
         .contact_push("mailto:".to_owned() + &email)
         .cache(DirCache::new("./acme_cache"))
+        .directory_lets_encrypt(production)
         .incoming(tcp_listener.incoming(), Vec::new());
 
     while let Some(tls) = tls_incoming.next().await {
